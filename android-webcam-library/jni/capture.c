@@ -115,31 +115,35 @@ void stop_camera(int* fd, int* rgb_buffer, int* y_buffer) {
     }
 }
 
+//-------------------------------------------------------------------------------------------------
+// (reference) Example 1.10. Changing controls
+// http://hverkuil.home.xs4all.nl/spec/media.html
+//-------------------------------------------------------------------------------------------------
+
 void set_camera_scene(int fd, int sceneMode) {
-struct v4l2_control control;
+  struct v4l2_control control;
   LOGE("-----> set_camera_scene = %d", sceneMode);
 
   memset(&control, 0, sizeof(control));
   control.id = V4L2_CID_SCENE_MODE;
 
   if (0 == ioctl(fd, VIDIOC_G_CTRL, &control)) {
-  	control.value += 1;
+  control.value += 1;
 
-  	/* The driver may clamp the value or return ERANGE, ignored here */
+  /* The driver may clamp the value or return ERANGE, ignored here */
 
-  	if (-1 == ioctl(fd, VIDIOC_S_CTRL, &control)
-  	    && errno != ERANGE) {
-  		LOGE("|     V4L2_CID_SCENE_MODE is not supported\n");
-  	}
+  if (-1 == ioctl(fd, VIDIOC_S_CTRL, &control) && errno != ERANGE) {
+    LOGE("|     V4L2_CID_SCENE_MODE is not supported\n");
+  }
   /* Ignore if V4L2_CID_CONTRAST is unsupported */
   } else if (errno != EINVAL) {
-  		LOGE("|     V4L2_CID_SCENE_MODE is not supported\n");
+    LOGE("|     V4L2_CID_SCENE_MODE is not supported\n");
   }
 
-  	LOGE("|     V4L2_CID_SCENE_MODE is supported!!\n");
+  LOGE("|     V4L2_CID_SCENE_MODE is supported!!\n");
   control.id = V4L2_CID_SCENE_MODE;
   control.value = sceneMode; /* silence */
-  	LOGE("|     V4L2_CID_SCENE_MODE = %d", control.value);
+  LOGE("|     V4L2_CID_SCENE_MODE = %d", control.value);
 
   /* Errors ignored */
   ioctl(fd, VIDIOC_S_CTRL, &control);
