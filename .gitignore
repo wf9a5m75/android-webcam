@@ -1,0 +1,9 @@
+obj
+assets
+bin
+gen
+.classpath
+.project
+.settings
+libs
+target
